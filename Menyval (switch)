@@ -1,0 +1,35 @@
+using System;
+
+namespace Meny
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            bool meny = true;
+            while (meny)
+            {
+            Console.WriteLine("1. Menyval #1");
+            Console.WriteLine("2. Menyval #2");
+            Console.WriteLine("3. Avsluta");
+            int menyval = int.Parse(Console.ReadLine());
+            switch (menyval)
+          		{
+                case 1:
+                    Console.WriteLine("Menyval #1");
+                    break;
+                case 2:
+                    Console.WriteLine("Menyval #2");
+                    break;
+                case 3:
+                    Console.WriteLine("Avsluta");
+                    meny = false;
+                    break;
+                default:
+                    Console.WriteLine("Fel val!");
+                    break;
+           		 }
+            }
+        }
+    }
+}
