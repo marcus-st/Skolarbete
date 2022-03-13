@@ -1,0 +1,91 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sångarkivet
+{
+    class Sång
+    {
+        public Sång(string mottagenArtist, string mottagenSångnamn, int mottagenSpeltid)
+        {
+            artist = mottagenArtist;
+            sångnamn = mottagenSångnamn;
+            speltid = mottagenSpeltid;
+        }
+
+        private string artist;
+        public string Artist
+        {
+            get { return artist; }
+        }
+
+        private string sångnamn;
+        public string Sångnamn
+        {
+            get { return sångnamn; }
+        }
+
+        private int speltid;
+        public int Speltid
+        {
+            get { return speltid; }
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Sång> låtlistan = new List<Sång>(); //sånglistan
+            bool menytrue = true; //menyn öppen
+            while(menytrue)
+            {
+                Console.WriteLine("[1] Ny sång" + "\n[2] Visa sparade sånger" + "\n[3] Sök efter artist" + "\n[4] Avsluta programmet");
+                Int32.TryParse(Console.ReadLine(), out int menyval);
+
+                switch (menyval)
+                {
+                case 1:
+                    Console.WriteLine("Skriv in artistnamnet");
+                        string artist = Console.ReadLine();
+                    Console.WriteLine("Skriv in låtens namn");
+                        string sångnamn = Console.ReadLine();
+                    Console.WriteLine("Skriv in låtens speltid");
+                        Int32.TryParse(Console.ReadLine(), out int speltid); ;
+                        Sång nySång = new Sång(artist, sångnamn, speltid);
+                        låtlistan.Add(nySång);
+                    break;
+
+
+                case 2:
+                    foreach(Sång låt in låtlistan)
+                        {
+                            Console.WriteLine("Artist: " + låt.Artist + "\nLåtnamn: " + låt.Sångnamn + "\nSpeltid: " + låt.Speltid + "\n--------------------------");
+                        }
+                    break;
+
+                case 3:
+                        Console.WriteLine("Skriv in artistnamnet du vill söka på:");
+                        string sökartist = Console.ReadLine();
+                        bool artistsökning = false;
+                        for (int i = 0; i < låtlistan.Count; i++)
+                        {
+                            if (låtlistan[i].Artist == sökartist)
+                            {
+                                Console.WriteLine("--------------------------");
+                                Console.WriteLine("Artist: " + låtlistan[i].Artist + " \nSångnamn: " + låtlistan[i].Sångnamn + "\nSpeltid: " + låtlistan[i].Speltid);
+                                artistsökning = true;
+                            }
+                        }
+                        break;
+
+                    case 4:
+                        menytrue = false;
+                        break;
+
+                default:
+                    Console.WriteLine("Du måste välja 1-4");
+                    break;
+                }
+            }
+        }
+    }
+}
