@@ -1,0 +1,405 @@
+#include <iostream>
+#include <clocale> //Använder setlocale funktionen för att definiera språket. 
+#include <ctime> //Använder time funktionen för tärningskastet. 
+#include <cstdlib> //Används för olika system funktionerna.
+
+using namespace std;
+
+//Här samlas programmets samtliga variabler för snabb översikt. 
+int insattning;
+int saldo;
+char insattningsmeny_val;
+char huvudmeny_val;
+char betmeny_val;
+int summa;
+int potten;
+int spelarens_score;
+int datorns_score;
+int tarning[4];
+int rond;
+string tarningident[4] = { "Datorns första tärning", "Din första tärning", "Datorns andra tärning", "Spelarens andra tärning" };
+int datornstarning;
+int spelarenstarning;
+int datorns_tarningsid;
+int spelarens_tarningsid;
+int vinstsumma;
+
+void huvudmeny(); //Huvudmeny och spelstart initeras först för att vara tillgänglig för övriga funktioner.
+void spelstart(); 
+
+void pause() //Den här funktionen används eftersom pause funktionen saknas utanför Windows. 
+{
+    #ifdef _WIN32
+    {
+        system("pause");
+    }
+    #else
+    {
+        cout << "Tryck enter för att fortsätta." << endl;
+        cin.clear();
+        cin.ignore(10000, '\n');
+    }
+    #endif
+}
+
+void rensa() //Den här funktionen används eftersom kommandot för att rensa skärmen ser olika ut på olika system.
+{
+    #ifdef _WIN32
+    {
+        system("cls");
+    }
+    #else
+    {
+        system("clear");
+    }
+    #endif
+}
+
+void utsevinnare() 
+{
+    if (spelarens_score > datorns_score)
+    {
+        cout << "Grattis du vann " << potten << "kr!" << endl;
+        saldo = saldo + potten;
+        vinstsumma = vinstsumma + potten;
+        cout << endl << "Din totala vinstsumma är " << vinstsumma << "kr." << endl;
+        potten = 0;
+        summa = 0;
+        rond = 0;
+        spelarens_score = 0;
+        datorns_score = 0;
+        pause();
+        rensa();
+        huvudmeny();
+    }
+    else
+    {
+        cout << "Tyvärr datorn vann." << endl;
+        vinstsumma = vinstsumma - (potten / 2);
+        cout << endl << "Din totala vinstsumma är " << vinstsumma << "kr." << endl;
+        potten = 0;
+        summa = 0;
+        rond = 0;
+        spelarens_score = 0;
+        datorns_score = 0;
+        pause();
+        rensa();
+        huvudmeny();
+    }
+}
+
+void tarningskast() //Funktionen för själva spelet som. En for-loop kastar 4 tärningar som sedan identiferas och presenteras för spelaren. Tärningarna utvärderas sedan genom if-satser för att utse omgångens vinnare. Efter spelet skickas spelaren vidare till spelstart där omgångarna utvärderas och presenteras.
+{
+    for (int i = 0; i < 4; i++)
+    {
+        int slumptal = rand() % 6 + 1;
+        tarning[i] = slumptal;
+        cout << tarningident[i] << " landar på " << tarning[i] << endl;
+        pause();
+        rensa();
+    }
+    cout << "Datorns tärningar landade på: " << tarning[0] << " och " << tarning[2] << endl;
+    cout << "Dina tärningar landade på " << tarning[1] << " och " << tarning[3] << endl;
+    pause();
+    rensa();
+
+    if (tarning[0] == tarning[2])
+    {
+        datornstarning = tarning[0];
+        datorns_tarningsid = 0;
+    }
+    else if (tarning[0] > tarning[2])
+    {
+        datornstarning = tarning[0];
+        datorns_tarningsid = 0;
+    }
+    else if (tarning[0] < tarning[2])
+    {
+        datornstarning = tarning[2];
+        datorns_tarningsid = 2;
+    }
+
+    if (tarning[1] == tarning[3])
+    {
+        spelarenstarning = tarning[1];
+        spelarens_tarningsid = 1;
+    }
+    else if (tarning[1] > tarning[3])
+    {
+        spelarenstarning = tarning[1];
+        spelarens_tarningsid = 1;
+    }
+    else if (tarning[1] < tarning[3])
+    {
+        spelarenstarning = tarning[3];
+        spelarens_tarningsid = 3;
+    }
+    if (datornstarning > spelarenstarning)
+    {
+        datorns_score++;
+        rond++;
+        cout << tarningident[datorns_tarningsid] << " med " << datornstarning << " blev störst. Datorn vinner omgång " << rond << "!" << endl;
+    }
+    else if (spelarenstarning > datornstarning)
+    {
+        spelarens_score++;
+        rond++;
+        cout << tarningident[spelarens_tarningsid] << " med " << spelarenstarning << " blev störst. Du vinner omgång " << rond << "!" << endl;
+    }
+    else
+    {
+        cout << "Oavgjort, ingen vinnare! Omgång " << rond + 1 << " spelas om." << endl;
+        pause();
+        rensa();
+        tarningskast();
+    }
+    pause();
+    rensa();
+    spelstart();
+}
+
+void spelstart() //Spelstarten presenterar antalet omgångar och score. Funktionen avbryter även spelet när spelaren eller datorn vunnit 2 omgångar och skickar spelaren vidare till funktionen som utser vinnaren.
+{
+    if (spelarens_score == 2 || datorns_score == 2)
+    {
+        utsevinnare();
+        rensa();
+    }
+    else
+    {
+        cout << "Rond: " << rond << "/3!" << endl;
+        cout << "Tärningarna kommer nu att kastas." << endl;
+        cout << "Score: " << endl;
+        cout << "Spelaren: " << spelarens_score << "/3" << endl;
+        cout << "Datorn: " << datorns_score << "/3" << endl << endl;
+        cout << "I potten: " << potten << "kr" << endl;
+        pause();
+        rensa();
+        tarningskast();
+    }
+
+}
+
+void insattningsmeny() //Insättningsmenyn nås via huvudmenyn och hanterar både själva menyn och insättningen.  Samt räknar ut att tillräckligt med pengar finns för att spela samt förhindrar spelaren från att sätta in pengar när saldot överstiger 5000.
+{
+    cout << "Du har " << saldo << "kr på kontot." << endl;
+    cout << "Vill du sätta in pengar på kontot?" << endl << "1. Ja" << endl << "2. Nej" << endl;
+    cin >> insattningsmeny_val;
+    rensa();
+    if (insattningsmeny_val == '1')
+    {
+        cout << "Hur mycket vill du sätta in?" << endl;
+        cin >> insattning;
+        cin.clear();
+        cin.ignore(10000, '\n');
+        rensa();
+        if (insattning >= 0)
+        {
+            if (insattning + saldo >= 5000)
+            {
+                cout << "Insättningen gör att kontot överstiger 5000kr." << endl;
+                cout << "Du får max sätta in " << 5000 - saldo << "kr." << endl;
+                pause();
+                rensa();
+                insattningsmeny();
+            }
+            else
+            {
+                saldo = insattning + saldo;
+                huvudmeny();
+            }   
+        }
+        else if (insattning <= 0)
+        {
+            cout << "Du kan inte sätta in ett negativt värde." << endl;
+            pause();
+            rensa();
+            insattningsmeny();
+        }
+    }
+    else if (insattningsmeny_val == '2')
+    {
+        if (saldo <= 0)
+        {
+            cout << "Du har inga pengar på kontot, sätt in pengar för att spela. Återvänder till huvudmeny." << endl;
+            pause();
+            rensa();
+            huvudmeny();
+        }
+    }
+    else
+    { 
+            cout << "Du måste välja val mellan 1 och 2" << endl;
+            insattningsmeny_val = 0;
+            pause();
+            rensa();
+            cin.clear();
+            cin.ignore(10000, '\n');
+    }
+}
+
+void betmeny() //Menyn där spelaren får välja hur mycket som ska satsas, varje val kontrolleras mot spelarens saldo. Om det finns tillräckligt för att placera ett bet dubblas summan och skickar spelaren vidare till spelstarten.
+{
+    cout << "Ditt saldo: " << saldo << "kr" << endl;
+    cout << "Välj hur mycket du vill satsa." << endl;
+    cout << "1. 100kr" << endl;
+    cout << "2. 300kr" << endl;
+    cout << "3. 500kr" << endl;
+    cout << "4. Åter till huvudmenyn" << endl;
+    cin >> betmeny_val;
+    if (betmeny_val == '1')
+    {
+        if (saldo >= 100)
+        {
+            saldo = saldo - 100;
+            summa = summa + 100;
+            potten = potten + 200;
+            rensa();
+            spelstart();
+        }
+        else
+        {
+            rensa();
+            cout << "Du har inte tillräckligt med pengar på kontot." << endl;
+            pause();
+            rensa();
+            betmeny();
+        }
+
+    }
+    else if (betmeny_val == '2')
+    {
+        if (saldo >= 300)
+        {
+            saldo = saldo - 300;
+            summa = summa + 300;
+            potten = potten + 600;
+            rensa();
+            spelstart();
+        }
+        else
+        {
+            rensa();
+            cout << "Du har inte tillräckligt med pengar på kontot." << endl;
+            pause();
+            rensa();
+            betmeny();
+        }
+
+    }
+    else if (betmeny_val == '3')
+    {
+        if (saldo >= 500)
+        {
+            saldo = saldo - 500;
+            summa = summa + 500;
+            potten = potten + 1000;
+            rensa();
+            spelstart();
+        }
+        else
+        {
+            rensa();
+            cout << "Du har inte tillräckligt med pengar på kontot." << endl;
+            pause();
+            rensa();
+            betmeny();
+        }
+    }
+    else if (betmeny_val == '4')
+    {
+        rensa();
+        huvudmeny();
+    }
+    else
+    {
+        rensa();
+        cout << "Ogiltigt val." << endl;
+        pause();
+        rensa();
+        cin.clear();
+        cin.ignore(10000, '\n');
+        betmeny();
+    }
+}
+
+void huvudmeny() //Huvudmenyn uppbyggd av switch-statements med en default som känner av felaktig input. Hit skickas spelaren direkt efter välkomstmeddelandet.
+{
+    while (1)
+    {
+        cout << "Välj ett av följande alternativ och tryck enter." << endl;
+        cout << "1. Kontrollera saldo." << endl;
+        cout << "2. Sätt in pengar." << endl;
+        cout << "3. Börja spela." << endl;
+        cout << "4. Avsluta spelet." << endl;
+        cin >> huvudmeny_val;
+        
+        switch (huvudmeny_val) 
+        {
+        case '1': //Presenterar saldot.
+            rensa();
+            cout << "Du har " << saldo << "kr på kontot." << endl;
+            pause();
+            rensa();
+            break;
+
+        case '2': //Skickar spelaren till insättningsmenyn.
+            rensa();
+            insattningsmeny();
+            break;
+        case '3': //Kontrollerar om spelaren har 100kr på kontot och i så fall kan placera ett minsta bet.
+        {
+            if (saldo >= 100)
+            {
+                rensa();
+                betmeny();
+                break;
+            }
+            else
+            {
+                rensa();
+                cout << "Du måste ha minst 100kr på kontot för att spela." << endl;
+                pause();
+                rensa();
+                break;
+            }
+        }
+
+        case '4': //Avslutar spelet
+            exit(0);
+        default: //Hanterar felaktig input i huvudmenyn och i så fall returnerar “Ogiltigt val” i stället för ett felmeddelande.
+            rensa();
+            cout << "Ogiltigt val." << endl;
+            pause();
+            rensa();
+            cin.clear();
+            cin.ignore(10000, '\n');
+            huvudmeny();
+            break;
+        }
+    }
+} 
+
+void valkomstmeddelande() //Visas i början av spelet och resenterar spelets regler.
+{
+    cout << "Välkommen till kasta tärning." << endl << endl;
+    cout << "Börja med att sätta in pengar på kontot, max 5000kr kan sättas in på kontot åt gången." << endl;
+    cout << "Kontots saldo kan hålla mer än 5000kr i form av vinster," << endl << "men kan endast fyllas på om det totala saldot understiger 5000kr" << endl << endl;
+    cout << "Spelets regler:" << endl;
+    cout << "Spelaren kan välja en summa att satsa (100kr, 300kr eller 500kr) därefter matchar datorn summan" << endl;
+    cout << "och lägger den till potten." << endl;
+    cout << "Spelaren och datorn kastar två tärningar vardera, högsta tärningen vinner omgången." << endl;
+    cout << "I händelse av oavgjort kastas tärningarna om tills en vinnare av omgången kan utses." << endl;
+    cout << "Bäst av 3 omgångar vinner potten." << endl;
+    pause();
+}
+   
+int main() //Main innehåller endast det som behövs fram tills spelaren skickas till huvudmenyn.
+{
+    setlocale(LC_ALL, "se_SE"); //Anger svensk locale.
+    srand(time(0)); // Använd endast en gång
+    valkomstmeddelande(); //Visa välkomstmeddelandet endast i början. 
+    rensa();
+    huvudmeny(); //Gå till huvudmenyn
+    rensa();
+}
