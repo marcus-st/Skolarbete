@@ -1,24 +1,36 @@
 using System;
 
-namespace GlazerCalc
+namespace Ålder
 {
-    class GlazerCalc
+    class Åldercheck
     {
         static void Main(string[] args)
         {
-            double width, height, woodLength, glassArea;
-            string widthString, heightString;
+            Console.WriteLine("Hur gammal är du?");
+            int alder = 0;
 
-            Console.WriteLine("Input width");
-            widthString = Console.ReadLine();
-            width = double.Parse(widthString);
-            Console.WriteLine("Input height");
-            heightString = Console.ReadLine();
-            height = double.Parse(heightString);
-            woodLength = 2 * (width + height) * 3.25;
-            glassArea = 2 * (width + height);
-            Console.WriteLine("The length of the wood is " + woodLength + " feet.");
-            Console.WriteLine("The area of the glass is " + glassArea + " square meters.");
+            bool lyckad = Int32.TryParse(Console.ReadLine(), out alder);
+
+            if (!lyckad)
+            { 
+                Console.WriteLine("Det är inte en ålder!");
+            }
+            else if (alder >= 19)
+            {
+                Console.WriteLine("Eftersom du är " + alder + " så är du myndig.");
+            }
+            else if (alder == 18)
+            {
+                Console.WriteLine("Grattis, eftersom du är " + alder + " år så har du blivit myndig.");             
+            }
+            else if (alder < 18 && alder > 0)
+            { 
+                Console.WriteLine("Du är inte myndig!");
+            }
+            else
+            {
+                Console.WriteLine("0?");
+            }
         }
     }
 }
