@@ -1,0 +1,22 @@
+using System;
+using System.Collections.Generic;
+namespace ConsoleApp13
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<string> Namn = new List<string>();
+            Console.WriteLine("Skriv 4 namn");
+            Namn.Add(Console.ReadLine());
+            Namn.Add(Console.ReadLine());
+            Namn.Add(Console.ReadLine());
+            Namn.Add(Console.ReadLine());
+
+            foreach (var _namn in Namn)
+            {
+                Console.WriteLine(_namn);
+            }
+    }
+    }
+}
