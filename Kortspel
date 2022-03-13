@@ -1,0 +1,188 @@
+#include <iostream>
+#include <clocale>
+#include <ctime> 
+
+using namespace std;
+string spelare1, spelare2; //Sparar namnet på spelarna.
+int spelare1_score, spelare2_score; //Räknar score på poängtavlan.
+int spelade, rond; //Räknar antalet spelade omgångar (spelade) och antaler ronder under omgången (rond).
+int spelare1_kortnr, spelare2_kortnr; //Anger kortets nummer och likaså värde.
+int spelare1_rond, spelare2_rond; //Räknar antalet spelade ronder under en omgång.
+
+void pause(); //Funktionen används som alternativ till system("pause").
+void rensa(); //Funktionen används som alternativ till system("clear").
+void intro(); //Visar spelets regler i början av spelet.
+string spelare(string spelarnummer); //Tilldelar namn till spelarna.
+void poangtavla(); //Visar poängtavlan mellan varje rond.
+void blandakort(); //Simulerar att korten blandas samt ser till att två kort inte är lika, samt inför varje omgång och utser vinnaren när någon vunnit 2/3, därefter återställer använda variabler.
+void delautkort(); //Identiferar och delar ut korten.
+int kortnummer(); //Tilldelar ett slumpmässigt kortnummer.
+string identifierakort(int kort); //Tilldelar ett namn på kortet.
+void utsevinnare(); //Identifierar och talar om vem som vann.
+string identifieravinnare(int a, int b); //Tar in kortnummer och returnerar vinnaren.
+void rondpoang(string rondvinnare); //Tilldelar poäng till vinnaren av ronden.
+string utsespelvinnare(int a, int b); //Kontrollerar vem som har högst rondpoäng och utser vinnaren av spelet.
+void tilldelapoang(string vinnare); //Kontrollerar vem som vann och tilldelar denne poäng.
+
+int main()
+{
+    setlocale(LC_ALL, "se_SE");
+    srand((unsigned int)time(NULL));
+    rensa(); //Initieras först för att justera texten till nedre delen av konsollen.
+    intro();
+    spelare1 = spelare("spelare 1");
+    spelare2 = spelare("spelare 2");
+    poangtavla();
+}
+void pause() {
+    cout << "Tryck ENTER för att fortsätta..." << endl;
+    cin;
+    cin.clear();
+    cin.ignore(10000, '\n');
+}
+void rensa() {
+    for (int r = 0; r < 100; r++) {
+        cout << endl;
+    }
+}
+string spelare(string spelarnummer) {
+    string spelarnamn;
+    while (spelarnamn.empty()) {
+        cout << "Ange namnet på " << spelarnummer << endl;
+        cin >> spelarnamn;
+    }
+    return spelarnamn;
+}
+void intro() {
+    cout << "\06 Kort-spelet \06" << endl << endl;
+    cout << "Spelets regler:" << endl;
+    cout << "För två spelare, varje spelare drar varsit kort där högsta kortet vinner ronden." << endl;
+    cout << "Bäst av 3 ronder vinner." << endl;
+    cout << "Dras samma kort vinner färg i följande ordning spader, hjärter, ruter, klöver." << endl;
+    pause();
+    rensa();
+}
+void poangtavla() {
+    while (1) {
+        rensa();
+        cout << "           Poängtavla:" << endl;
+        cout << "________________________________" << endl;
+        cout << spelare1 << " = " << spelare1_score << endl;
+        cout << spelare2 << " = " << spelare2_score << endl;
+        cout << endl << "Menyval: " << endl;
+        cout << "1. Spela omgång " << spelade + 1 << endl;
+        cout << "2. Avsluta spelet" << endl;
+        int menyval;
+        cin >> menyval;
+        if (menyval == 1) {
+            pause();
+            blandakort();
+        }
+        else if (menyval == 2) {
+            exit(0);
+        }
+        else {
+            cout << "Du måste ange 1 eller 2." << endl;
+            cin.clear();
+            cin.ignore(10000, '\n');
+        }
+    }
+}
+void blandakort() {
+    if ((spelare1_rond == 2) || (spelare2_rond == 2)) {
+        rensa();
+        string spelvinnare = utsespelvinnare(spelare1_rond, spelare2_rond);
+        cout << spelvinnare << " har vunnit!" << endl;
+        tilldelapoang(spelvinnare);
+        spelare1_rond = 0;
+        spelare2_rond = 0;
+        rond = 0;
+        spelade++;
+        pause();
+        poangtavla();
+    }
+    else {
+        rensa();
+        cout << "Rond " << rond + 1 << " av 3." << endl;
+        cout << "Korten blandas!" << endl;
+        cout << spelare1 << ": " << spelare1_rond << "/3";
+        if (spelare1_rond > spelare2_rond) {
+            cout << " *leder*";
+        }
+        cout << endl;
+        cout << spelare2 << ": " << spelare2_rond <<"/3";
+        if (spelare2_rond > spelare1_rond) {
+            cout << " *leder*";
+        }
+        cout << endl;
+        spelare1_kortnr = kortnummer();
+        spelare2_kortnr = kortnummer();
+        while (spelare1_kortnr == spelare2_kortnr) {
+            spelare2_kortnr = kortnummer();
+        }
+        pause();
+        delautkort();
+    }
+}
+void delautkort() {
+    rensa();
+    string kort1, kort2;
+    kort1 = identifierakort(spelare1_kortnr);
+    kort2 = identifierakort(spelare2_kortnr);
+    cout << spelare1 << " fick " << kort1 << endl;
+    cout << spelare2 << " fick " << kort2 << endl;
+    pause();
+    utsevinnare();
+}
+void utsevinnare() {
+    rensa();
+    string vinnare = identifieravinnare(spelare1_kortnr,spelare2_kortnr);
+    cout << "Kortet som " << vinnare << " fick är värt mest." << endl;
+    rond++;
+    rondpoang(vinnare);
+    pause();
+    blandakort();
+}
+string identifieravinnare(int a, int b) {
+    if (a > b) {
+        return spelare1;
+    }
+    else
+    {
+        return spelare2;
+    }
+}
+int kortnummer() {
+    int kortnummer = rand() % 52;
+    return kortnummer;
+}
+string identifierakort(int kort) {
+    string kortlek[52] = {"\05 ETT","\04 ETT","\03 ETT","\06 ETT","\05 TVÅ","\04 TVÅ","\03 TVÅ","\06 TVÅ","\05 TRE","\04 TRE","\03 TRE","\06 TRE","\05 FYRA","\04 FYRA","\03 FYRA","\06 FYRA","\05 FEM","\04 FEM","\03 FEM","\06 FEM","\05 SEX","\04 SEX","\03 SEX","\06 SEX","\05 SJU","\04 SJU","\03 SJU","\06 SJU","\05 ÅTTA","\04 ÅTTA","\03 ÅTTA","\06 ÅTTA","\05 NIO","\04 NIO","\03 NIO","\06 NIO","\05 TIO","\04 TIO","\03 TIO","\06 TIO","\05 KNEKT","\04 KNEKT","\03 KNEKT","\06 KNEKT","\05 DAM","\04 DAM","\03 DAM","\06 DAM","\05 KUNG","\04 KUNG","\03 KUNG","\06 KUNG"};
+    string kortet = kortlek[kort];
+    return kortet;
+}
+void rondpoang(string rondvinnare) {
+    if (rondvinnare == spelare1) {
+        spelare1_rond=spelare1_rond+1;
+    }
+    else
+    {
+        spelare2_rond=spelare2_rond+1;
+    }
+}
+string utsespelvinnare(int a, int b) {
+    if (a > b) {
+        return spelare1;
+    }
+    else {
+        return spelare2;
+    }
+}
+void tilldelapoang(string vinnare) {
+    if (vinnare == spelare1) {
+        spelare1_score++;
+    }
+    else {
+        spelare2_score++;
+    }
+}
