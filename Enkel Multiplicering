@@ -1,0 +1,19 @@
+using System;
+
+namespace multiplicering
+{
+    class Multiplicering
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Skriv in första värdet");
+            string inputNum1 = Console.ReadLine();
+            int num1 = Convert.ToInt32(inputNum1);
+            Console.WriteLine("Skriv in vad det ska multipliceras med");
+            string inputNum2 = Console.ReadLine();
+            int num2 = Convert.ToInt32(inputNum2);
+            int sum = num1 * num2;
+            Console.WriteLine("Summan är: " + sum);
+        }
+    }
+}
