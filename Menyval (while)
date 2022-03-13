@@ -1,0 +1,26 @@
+using System;
+
+namespace Meny
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            bool meny = true;
+            while (meny)
+            {
+                Console.WriteLine("1. Menyval #1");
+                Console.WriteLine("2. Menyval #2");
+                Console.WriteLine("3. Avsluta");
+                int menyval = Convert.ToInt32(Console.ReadLine());
+                if (menyval == 1)
+                    Console.WriteLine("Du valde meny 1");
+                else if (menyval == 2)
+                    Console.WriteLine("Du valde meny 2");
+                else
+                    Console.WriteLine("Bye!");
+                    meny = false;
+            }
+        }
+    }
+}
