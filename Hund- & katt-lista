@@ -1,0 +1,101 @@
+using System;
+using System.Collections.Generic;
+namespace ConsoleApp13
+{
+    class Hund
+    {
+        public Hund(string inNamn, string inHundras, int inAlder)
+        {
+            namn = inNamn;
+            hundras = inHundras;
+            ålder = inAlder;
+        }
+        private string namn;
+        public string Namn
+        {
+            get { return namn; }
+        }
+
+        private string hundras;
+        public string Hundras
+        {
+            get { return hundras; }
+        }
+        private int ålder;
+        public int Ålder
+        {
+            get { return ålder; }
+        }
+        public void Skall()
+        {
+            Console.WriteLine(namn + ": Voff!");
+        }
+        public void Sitt()
+        {
+            Console.WriteLine(namn + " sätter sig ned.");
+        }
+
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Hund hund1 = new Hund("Snuffy", "Bichon Frisé", 4);
+            Hund hund2 = new Hund("Hjalle", "Schäfer", 3);
+            Hund hund3 = new Hund("Zorro", "Hoawart", 8);
+
+            List<Hund> hundLista = new List<Hund>();
+            bool isRunning = true;
+            while(isRunning)
+            {
+                Console.WriteLine("[1] Lägg till en ny hund" + "\n[2] Visa alla hundar" + "\n[3] Sök bland hundar" + "\n[4] Avsluta programmet");
+                Int32.TryParse(Console.ReadLine(), out int menyval);
+                switch (menyval)
+                {
+                    case 1:
+                        Console.WriteLine("Var god skriv hundens namn:");
+                        string namn = Console.ReadLine();
+                        Console.WriteLine("Var god skriv vilken hundras den har:");
+                        string hundras = Console.ReadLine();
+                        Console.WriteLine("Var god skriv hur gammal den är:");
+                        Int32.TryParse(Console.ReadLine(), out int ålder);
+                        Console.WriteLine("Tack! Hunden är sparad i hundlistan!");
+                        Hund nyHund = new Hund(namn, hundras, ålder);
+                        hundLista.Add(nyHund);
+                        break;
+
+                    case 2:
+                        foreach(Hund vovve in hundLista)
+                        {
+                            Console.WriteLine(vovve.Namn + " - " + vovve.Hundras + " (" + vovve.Ålder + " år)");
+                        }
+                        break;
+                    case 3:
+                        Console.WriteLine("Vilket hundnamn vill du söka på?");
+                        string sökord = Console.ReadLine();
+                        bool finnsHunden = false;
+                        for(int i = 0; i < hundLista.Count; i++)
+                        {
+                            if(hundLista[i].Namn == sökord)
+                            {
+                                Console.WriteLine("Hunden finns!");
+                                Console.WriteLine(hundLista[i].Namn + " - " + hundLista[i].Hundras + " (" + hundLista[i].Ålder + " år)");
+                                finnsHunden = true;
+
+                            }
+                        }
+                        if (!finnsHunden) 
+                                Console.WriteLine("Tyvärr hunden funns inte sparad i listan");
+                        break;
+                    case 4:
+                        isRunning = false;
+                        break;
+                    default:
+                        break;
+                }
+
+                   
+            }
+        }
+    }
+}
