@@ -1,0 +1,30 @@
+using System;
+
+namespace ConsoleApp12
+{
+    class Program
+    {
+        static int Addera(int[] siffra)
+        {
+            int summa = 0;
+            for (int a = 0; a < siffra.Length; a++)
+            {
+                summa += siffra[a];
+            }
+            return summa;
+        }
+        
+        static void Main(string[] args)
+        {
+            int[] minarray = new int[4];
+            Console.WriteLine("Skriv 5 siffror:");
+            for (int i = 0; i < minarray.Length; i++)
+            {
+                Console.WriteLine("Siffra för arraynummer: " + i);
+                Int32.TryParse(Console.ReadLine(), out minarray[i]);
+            }
+            int summa = Addera(siffra: minarray);
+            Console.WriteLine("Summa:" + summa);
+        }
+    }
+}
