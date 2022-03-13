@@ -1,0 +1,17 @@
+using System;
+
+namespace ConsoleApp10
+{
+    class Program
+    {
+
+        static string text(string text1, string text2)
+        {
+            return text1 + " " + text2;
+        }
+        static void Main(string[] args)
+        {
+            Console.WriteLine(text("Hej", "Då"));
+        }
+    }
+}
